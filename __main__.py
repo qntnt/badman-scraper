@@ -99,7 +99,8 @@ if __name__ == '__main__':
 
     # Report broken parcels
     if len(broken_parcels) > 0:
-        filename = 'broken_parcels.csv'
+        path, file = os.path.split(args.output_file)
+        filename = os.path.join(path, 'broken_parcels.csv')
         logger.warning('Some parcels are broken. Writing their ids to \"{file}\"', file=filename)
         with open(filename, 'w', newline='') as broken_csv:
             out_writer = csv.DictWriter(broken_csv, fieldnames=['broken_parcel_id'])
@@ -117,7 +118,8 @@ if __name__ == '__main__':
     os.rmdir(TMP_DIR)
 
     # Post-process output
-    post_processed_output_filename = 'post_processed_' + args.output_file
+    path, ext = os.path.splitext(args.output_file)
+    post_processed_output_filename = path + '_post_processed' + ext
     logger.info('Post-processing output to {file}', file=post_processed_output_filename)
     rows = []
     with open(args.output_file, 'r', newline='') as output_file:

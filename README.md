@@ -13,4 +13,11 @@ cd <PATH_TO_INPUT_XLSX_FILE>
 python3 <PATH_TO_BADMAN_SCRAPER> <INPUT_XLSX_FILE>
 ```
 
+For faster results, increase request concurrency like so
+
+```bash
+cd <PATH_TO_INPUT_XLSX_FILE>
+python3 <PATH_TO_BADMAN_SCRAPER> -c 20 <INPUT_XLSX_FILE>
+```
+
 Use `python3 <PATH_TO_BADMAN_SCRAPER> -h` to see help info.

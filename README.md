@@ -1,5 +1,8 @@
+
+
 # Prerequisites
-* Python3 + pip3
+* [Git](https://git-scm.com/downloads)
+* [Python3 + pip3](https://www.python.org/downloads/)
 
 # Installation
 ```bash

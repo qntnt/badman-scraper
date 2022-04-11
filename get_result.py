@@ -80,6 +80,8 @@ def get_result(parcel_id: str):
             logger.trace('"Parcel Number":\n{}', sheet['Ownership'][0:30])
             logger.trace('"Unnamed: 0":\n{}', sheet['Unnamed: 0'][0:30])
             logger.trace('{}', result)
+    except Exception as e:
+        logger.error(e)
     finally:
         for key in result:
             if type(result[key]) is str:

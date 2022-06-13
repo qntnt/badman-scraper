@@ -41,10 +41,14 @@ def post_process_row(row):
     processed_row['property_address_owner_address_similarity'] = similarity(row['property_address'], row['owner_address'])
     return processed_row
 
-def geocode_row(processed_row):
+def geocode_row(processed_row, geoapify_key=None):
     if 'owner_address_lat' not in processed_row or 'owner_address_lng' not in processed_row:
         try:
-            geodata = geocode(processed_row['owner_address'])
+            geodata = None
+            if geoapify_key is None:
+                geodata = geocode(processed_row['owner_address'])
+            else:
+                geodata = geocode_geoapify(processed_row['owner_address'], geoapify_key)
             if geodata is not None:
                 processed_row['owner_address_lat'] = geodata['lat']
                 processed_row['owner_address_lng'] = geodata['lng']
@@ -53,14 +57,18 @@ def geocode_row(processed_row):
 
     if 'property_address_lat' not in processed_row or 'property_address_lng' not in processed_row:
         try:
-            geodata = geocode(processed_row['property_address'])
+            geodata = None
+            if geoapify_key is None:
+                geodata = geocode(processed_row['property_address'])
+            else:
+                geodata = geocode_geoapify(processed_row['property_address'], geoapify_key)
             if geodata is not None:
                 processed_row['property_address_lat'] = geodata['lat']
                 processed_row['property_address_lng'] = geodata['lng']
         except Exception as e:
             logger.error(e)
 
-def post_process_output_file(output_file, post_processed_output_filename, geocode=False, concurrency=1):
+def post_process_output_file(output_file, post_processed_output_filename, geocode=False, concurrency=1, geoapify_key=None):
     logger.info('Post-processing output to {file}', file=post_processed_output_filename)
     rows = []
     with open(output_file, 'r', newline='') as output_file:
@@ -89,7 +97,7 @@ def post_process_output_file(output_file, post_processed_output_filename, geocod
             logger.info('Geocoding parcels')
             with alive_bar(len(processed_rows)) as progress:
                 for row in processed_rows:
-                    geocode_row(row)
+                    geocode_row(row, geoapify_key)
                     progress()
         
         logger.info('Writing post-processed output')
@@ -135,7 +143,7 @@ def handle_subcommand(subcommand: str, args):
             concurrency = max(1, min(200, concurrency))
         path, ext = os.path.splitext(output_file)
         post_processed_output_filename = path + '_post_processed' + ext
-        post_process_output_file(output_file, post_processed_output_filename, args.geocode, concurrency)
+        post_process_output_file(output_file, post_processed_output_filename, args.geocode, concurrency, args.geoapify_key)
         return
     elif subcommand == 'generate-shapefile':
         post_processed_output_filename = args.post_processed_output_file
@@ -311,6 +319,12 @@ if __name__ == '__main__':
         required=False,
         default=False,
         help='Include geocoding in post-processed results. Very slow...',
+    )
+    parser.add_argument(
+        '-geoapify_key',
+        type=str,
+        required=False,
+        help='Geoapify Api Key for geocoding',
     )
     args = parser.parse_args()
 

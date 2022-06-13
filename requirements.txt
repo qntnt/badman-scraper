@@ -6,3 +6,4 @@ tabula-py
 requests
 alive-progress
 loguru
+geocoder

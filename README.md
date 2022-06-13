@@ -5,6 +5,13 @@
 * [Python3 + pip3](https://www.python.org/downloads/)
 * [Java](https://www.java.com/en/download/help/download_options.html)
 
+For the `generate-shapefile` subcommand:
+* [GDAL](https://gdal.org/)
+  * On Mac: `brew install gdal`
+* geopy - `pip install geopy`
+* geopandas - `pip install geopandas`
+
+
 # Installation
 If you're using Python3 by default:
 ```bash
